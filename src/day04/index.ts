@@ -28,7 +28,6 @@ class Board {
     }
 
     addNumber(input: number){
-        console.log(input);
         const exists = this.lookup.get(input);
         if(exists !== undefined) {
             this.called[exists.x][exists.y] = true;
@@ -47,14 +46,10 @@ class Board {
                 }
             }
         }
-        console.log(total);
-
         return total;
     }
 
     isComplete(): boolean {
-        console.log(this.board);
-        console.log(this.called);
         let diagonalUpRight = true;
         let diagonalUpLeft = true;
         let diagonalDownRight = false;
