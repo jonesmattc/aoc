@@ -18,14 +18,34 @@ class Cave {
     }
 }
 
+const constructCave = (input: string[][]): Cave => {
+    const nameToCave = new Map<string, Cave>();
+    for(const [sideA, sideB] of input) {
+        if(!nameToCave.has(sideA)) {
+            const isLarge = sideA.toUpperCase() === sideA;
+            const caveA = new Cave(sideA, isLarge);
+            nameToCave.set(sideA, caveA);
+        }
+        if(!nameToCave.has(sideB)) {
+            const isLarge = sideB.toUpperCase() === sideB;
+            const caveB = new Cave(sideB, isLarge);
+            nameToCave.set(sideB, caveB);
+        }
+        const caveA = nameToCave.get(sideA);
+        const caveB = nameToCave.get(sideB);
+        if (caveA && caveB) {
+            caveA.addEdge(caveB);
+            caveB.addEdge(caveA);
+        }
+    }
+
+    return nameToCave.get("start") as Cave;
+}
+
 const getPaths = (cave: Cave, path: string[], seenDouble: boolean) => {
     if (cave.name === "end") {
         return [1, [path.join("-")]];
     }
-
-    // if (path.join("-") == "start-A-b-A-c-A") {
-    //     console.log(path.join("-"), cave.edges, seenDouble);
-    // }
 
     let paths = 0;
     let writtenPaths: string[] = [];
@@ -52,60 +72,21 @@ const getPaths = (cave: Cave, path: string[], seenDouble: boolean) => {
     return [paths, writtenPaths];
 }
 
-const part1 = (rawInput: string) => {
-    const nameToCave = new Map<string, Cave>();
+const part1 = (rawInput: string): number => {
     const input = parseInput(rawInput);
-    for(const [sideA, sideB] of input) {
-        if(!nameToCave.has(sideA)) {
-            const isLarge = sideA.toUpperCase() === sideA;
-            const caveA = new Cave(sideA, isLarge);
-            nameToCave.set(sideA, caveA);
-        }
-        if(!nameToCave.has(sideB)) {
-            const isLarge = sideB.toUpperCase() === sideB;
-            const caveB = new Cave(sideB, isLarge);
-            nameToCave.set(sideB, caveB);
-        }
-        const caveA = nameToCave.get(sideA);
-        const caveB = nameToCave.get(sideB);
-        if (caveA && caveB) {
-            caveA.addEdge(caveB);
-            caveB.addEdge(caveA);
-        }
-    }
-
-    const startCave = nameToCave.get("start") as Cave;
+    const startCave = constructCave(input);
     const [counts, paths] = getPaths(startCave, [startCave.name], true);
-    return counts;
+    // console.log((paths as string[]).sort());
+    return counts as number;
 }
 
-const part2 = (rawInput: string) => {
-    const nameToCave = new Map<string, Cave>();
+const part2 = (rawInput: string): number => {
     const input = parseInput(rawInput);
-    for(const [sideA, sideB] of input) {
-        if(!nameToCave.has(sideA)) {
-            const isLarge = sideA.toUpperCase() === sideA;
-            const caveA = new Cave(sideA, isLarge);
-            nameToCave.set(sideA, caveA);
-        }
-        if(!nameToCave.has(sideB)) {
-            const isLarge = sideB.toUpperCase() === sideB;
-            const caveB = new Cave(sideB, isLarge);
-            nameToCave.set(sideB, caveB);
-        }
-        const caveA = nameToCave.get(sideA);
-        const caveB = nameToCave.get(sideB);
-        if (caveA && caveB) {
-            caveA.addEdge(caveB);
-            caveB.addEdge(caveA);
-        }
-    }
-
-    const startCave = nameToCave.get("start") as Cave;
+    const startCave = constructCave(input);
     const [counts, paths] = getPaths(startCave, [startCave.name], false);
     // console.log((paths as string[]).sort());
-    return counts;
-    
+    return counts as number;
+
 }
 
 run({
